@@ -5,7 +5,7 @@ const path = require('path');
 const ROOT = __dirname;
 const PORT = 3081;
 const FILE = path.join(ROOT, 'enquiries.json');
-const CLASSES = ['Nursery', 'LKG', 'UKG', 'Class I', 'Class II', 'Class III'];
+const CLASSES = ['Nursery', 'LKG', 'UKG', 'Class I', 'Class II', 'Class III', 'Class IV', 'Class V', 'Class VI', 'JHS 1', 'JHS 2', 'JHS 3'];
 const hits = new Map();
 
 function clean(value, max) {

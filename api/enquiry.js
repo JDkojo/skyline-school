@@ -1,4 +1,4 @@
-const CLASSES = ['Nursery', 'LKG', 'UKG', 'Class I', 'Class II', 'Class III'];
+const CLASSES = ['Nursery', 'LKG', 'UKG', 'Class I', 'Class II', 'Class III', 'Class IV', 'Class V', 'Class VI', 'JHS 1', 'JHS 2', 'JHS 3'];
 const hits = new Map();
 
 function clean(value, max) {
