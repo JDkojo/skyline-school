@@ -97,6 +97,8 @@ const server = http.createServer((req, res) => {
   else fs.createReadStream(file).pipe(res);
 });
 
-server.listen(PORT, '127.0.0.1', () => {
-  console.log('Skyline School site at http://127.0.0.1:' + PORT);
+const port = Number(process.env.PORT) || PORT;
+const host = process.env.PORT ? '0.0.0.0' : '127.0.0.1';
+server.listen(port, host, () => {
+  console.log('Skyline School site at http://' + (host === '0.0.0.0' ? '127.0.0.1' : host) + ':' + port);
 });
