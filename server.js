@@ -6,6 +6,23 @@ const ROOT = __dirname;
 const PORT = 3081;
 const FILE = path.join(ROOT, 'enquiries.json');
 const CLASSES = ['Nursery', 'LKG', 'UKG', 'Class I', 'Class II', 'Class III'];
+const hits = new Map();
+
+function clean(value, max) {
+  return String(value || '').replace(/[<>\u0000-\u001F]/g, '').trim().slice(0, max);
+}
+
+function limited(ip) {
+  const now = Date.now();
+  const recent = (hits.get(ip) || []).filter((time) => now - time < 10 * 60 * 1000);
+  if (recent.length >= 5) {
+    hits.set(ip, recent);
+    return true;
+  }
+  recent.push(now);
+  hits.set(ip, recent);
+  return false;
+}
 const TYPES = {
   '.html': 'text/html; charset=utf-8',
   '.css': 'text/css; charset=utf-8',
@@ -56,23 +73,33 @@ const server = http.createServer((req, res) => {
         sendJson(res, 400, { ok: false, message: 'Could not read that form.' });
         return;
       }
-      const parentName = String(data.parentName || '').trim();
-      const phone = String(data.phone || '').trim();
-      const childName = String(data.childName || '').trim();
-      const className = String(data.className || '').trim();
-      const message = String(data.message || '').trim();
-      if (!parentName || !phone || !childName || !message || CLASSES.indexOf(className) < 0) {
+      const ip = String(req.socket.remoteAddress || 'unknown');
+      if (limited(ip)) {
+        sendJson(res, 429, { ok: false, message: 'Please wait a few minutes, or call the school.' });
+        return;
+      }
+      if (clean(data.company, 80)) {
+        sendJson(res, 200, { ok: true });
+        return;
+      }
+      const parentName = clean(data.parentName, 80);
+      const phone = clean(data.phone, 30);
+      const childName = clean(data.childName, 80);
+      const className = clean(data.className, 20);
+      const message = clean(data.message, 1000);
+      const phoneOk = /^[0-9+\s()-]{7,30}$/.test(phone);
+      if (!parentName || !childName || !message || !phoneOk || CLASSES.indexOf(className) < 0) {
         sendJson(res, 400, { ok: false, message: 'Please fill in every field and choose a class.' });
         return;
       }
       const rows = readEnquiries();
       rows.push({
         at: new Date().toISOString(),
-        parentName: parentName.slice(0, 80),
-        phone: phone.slice(0, 30),
-        childName: childName.slice(0, 80),
+        parentName: parentName,
+        phone: phone,
+        childName: childName,
         className: className,
-        message: message.slice(0, 1000)
+        message: message
       });
       fs.writeFileSync(FILE, JSON.stringify(rows, null, 2));
       sendJson(res, 200, { ok: true });

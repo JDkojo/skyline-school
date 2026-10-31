@@ -20,10 +20,31 @@
     el.textContent = SCHOOL.email;
     if (el.tagName === 'A') el.href = 'mailto:' + SCHOOL.email;
   });
-  const onThisComputer = location.hostname === 'localhost' || location.hostname === '127.0.0.1';
+  const hereHost = location.hostname;
+  const onThisComputer = hereHost === 'localhost' || hereHost === '127.0.0.1';
+  const staffUrl = (() => {
+    try {
+      const url = new URL(SCHOOL.portalUrl, location.origin);
+      if (url.protocol !== 'http:' && url.protocol !== 'https:') return '';
+      const loopback = url.hostname === 'localhost' || url.hostname === '127.0.0.1' || url.hostname === '[::1]';
+      if (loopback && !onThisComputer) return '';
+      return url.href;
+    } catch (e) {
+      return '';
+    }
+  })();
   document.querySelectorAll('[data-portal]').forEach((el) => {
-    if (onThisComputer) el.href = SCHOOL.portalUrl;
-    else el.remove();
+    el.setAttribute('rel', 'nofollow noopener');
+    if (staffUrl) {
+      el.href = staffUrl;
+      return;
+    }
+    el.href = '#staff';
+    el.setAttribute('aria-disabled', 'true');
+    el.title = 'Staff sign-in opens on the school computer.';
+    el.addEventListener('click', (event) => {
+      event.preventDefault();
+    });
   });
 
   const slot = document.querySelector('[data-logo-slot]');
@@ -97,7 +118,8 @@
       phone: form.phone.value,
       childName: form.childName.value,
       className: form.className.value,
-      message: form.message.value
+      message: form.message.value,
+      company: form.company ? form.company.value : ''
     };
     status.className = 'form-status';
     status.textContent = 'Sending…';

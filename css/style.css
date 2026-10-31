@@ -152,19 +152,29 @@ button, input, select, textarea { font: inherit; }
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 .nav a[aria-current="page"] { font-weight: 700; }
-.staff {
+.nav a.staff {
   display: inline-flex;
+  width: auto;
   align-items: center;
   gap: 8px;
-  margin-top: 14px;
+  margin: 14px 0 2px;
   padding: 10px 16px;
+  border: 0;
+  border-bottom: 0;
   border-radius: 4px;
   background: var(--blue);
   color: #fff !important;
-  border: 0 !important;
   font-weight: 700;
+  line-height: 1.2;
 }
 .staff small { font-weight: 600; opacity: 0.9; }
+.hp {
+  position: absolute;
+  left: -10000px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
 
 .hero {
   position: relative;
@@ -518,7 +528,7 @@ input:focus, select:focus, textarea:focus { outline: 2px solid var(--blue); bord
     padding: 8px 0;
   }
   .nav a[aria-current="page"] { color: var(--blue); }
-  .staff { margin: 0 0 0 8px; padding: 10px 14px; }
+  .nav a.staff { flex: 0 0 auto; margin: 0 0 0 8px; padding: 10px 14px; }
 }
 
 .reveal {
