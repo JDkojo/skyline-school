@@ -1,7 +1,7 @@
 const SCHOOL = {
   name: 'Skyline School',
   logo: '',
-  portalUrl: 'http://127.0.0.1:3080/',
+  portalUrl: 'https://gradewave-demo.vercel.app/',
   address: 'Accra, Ghana',
   phone: '030 000 0000',
   email: 'hello@skylineschool.edu.gh',
