@@ -111,7 +111,9 @@
         if (!result.ok || !result.body.ok) throw new Error((result.body && result.body.message) || 'Could not send.');
         form.reset();
         status.className = 'form-status ok';
-        status.textContent = 'Sent. The school has your message and will call you.';
+        status.textContent = result.body.stored === 'log'
+          ? 'Received. Please also call the school so the office has your number.'
+          : 'Sent. The school has your message and will call you.';
       })
       .catch((err) => {
         status.className = 'form-status err';

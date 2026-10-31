@@ -24,5 +24,5 @@ module.exports = function handler(req, res) {
     message: message.slice(0, 1000)
   };
   console.log(JSON.stringify({ enquiry: row }));
-  res.status(200).json({ ok: true });
+  res.status(200).json({ ok: true, stored: 'log' });
 };
